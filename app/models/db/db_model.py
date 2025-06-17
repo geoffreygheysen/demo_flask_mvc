@@ -18,7 +18,7 @@ class User(UserMixin, Base):
     def get_id(self):
         return str(self.id)
 
-class Task(Base):
+class Task(UserMixin, Base):
     __tablename__ = 'task'
     
     id = Column(Integer, primary_key=True, index=True)

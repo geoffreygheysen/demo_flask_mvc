@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from app.config import SECRET_KEY, URL_DB
 from sqlalchemy.exc import SQLAlchemyError
 
-from app.models.db.db_model import Base, User
+from app.models.db.db_model import Base, User, Task
 
 # Initialisation de l'application flask
 app = Flask(__name__)
@@ -41,7 +41,7 @@ if db_connected:
     # metadata.drop_all(bind=engine)
     metadata.create_all(bind=engine)
     
-    from app.routes import user
+    from app.routes import user, task
     
     print('------------------------')
     print('Connexion db établie ✅')
