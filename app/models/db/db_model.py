@@ -13,6 +13,7 @@ class User(UserMixin, Base):
     password = Column(String(200), nullable=False)
     is_active = Column(Boolean, default=True)
 
+    # Relation avec Task
     tasks = relationship('Task', back_populates="user")
     
     def get_id(self):
@@ -23,6 +24,20 @@ class Task(UserMixin, Base):
     
     id = Column(Integer, primary_key=True, index=True)
     description = Column(String(200), nullable=False)
-    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=True)
+    category_id = Column(Integer, ForeignKey("category.id"), nullable=True)
     
+    # Relation avec User
     user = relationship("User", back_populates="tasks")
+    # Relation avec Category
+    category = relationship("Category", back_populates="tasks")
+
+
+class Category(Base):
+    __tablename__ = 'category'
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False)
+
+    # Relation avec Task
+    tasks = relationship('Task', back_populates="category")

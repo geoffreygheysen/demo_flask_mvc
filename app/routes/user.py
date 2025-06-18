@@ -1,6 +1,10 @@
 from app import app
 from app.controllers.user_controller import UserController
 
+@app.route('/user/create', methods=['POST'])
+def create_user():
+    return UserController.create_user()
+
 @app.route('/users', methods=['GET'])
 def get_users():
     return UserController.get_all()

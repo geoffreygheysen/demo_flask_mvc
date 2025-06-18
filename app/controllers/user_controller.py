@@ -9,6 +9,21 @@ from app.tools.session_scope import session_scope
 
 
 class UserController(Resource):
+    # Create
+    def create_user():
+        user_schema = UserSchema()
+        try:
+            data = user_schema.load(request.json)
+        except ValidationError as e:
+            return jsonify(e.messages), 400
+        
+        with session_scope() as session:
+            user = User(**data)
+            session.add(user)
+            session.commit()
+            user_serialized = user_schema.dump(user)
+        return jsonify(user_serialized), 201
+    
     # get all
     def get_all():
         with session_scope() as session:
@@ -65,5 +80,3 @@ class UserController(Resource):
             user_serialized = user_schema.dump(user)
             session.delete(user)
         return jsonify({"message": f"Utilisateur avec l'id {id} supprimé.", "user": user_serialized }), 200
-    
-    #create

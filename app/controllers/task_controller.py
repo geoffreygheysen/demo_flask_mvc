@@ -9,6 +9,21 @@ from app.tools.session_scope import session_scope
 
 
 class TaskController(Resource):
+    # Create
+    def create_task():
+        task_schema = TaskSchema()
+        try:
+            data = task_schema.load(request.json)
+        except ValidationError as e:
+            return jsonify(e.messages), 400
+        
+        with session_scope() as session:
+            task = Task(**data)
+            session.add(task)
+            session.commit()
+            task_serialized = task_schema.dump(task)
+        return jsonify(task_serialized), 201
+
     # get all
     def get_all_tasks():
         with session_scope() as session:
@@ -26,8 +41,6 @@ class TaskController(Resource):
             task_schema = TaskSchema(many=False)
             task_serialized = task_schema.dump(task)
         return jsonify(task_serialized), 200
-    
-    # Create
 
     # Update
     def update_task(id):
@@ -48,3 +61,11 @@ class TaskController(Resource):
                 return {'message' : f'Aucune tâche trouvé avec id : {id}'}, 404
 
     # Delete
+    def delete_user(id):
+        with session_scope() as session:
+            task = session.query(Task).filter_by(id=id).first()
+            if task:
+                session.delete(task)
+                return jsonify({"message": "Tâche supprimée avec succès"}), 200
+            else:
+                return jsonify({"message": f"Aucune tâche trouvée avec id : {id}"}), 404
